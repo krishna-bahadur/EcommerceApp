@@ -1,0 +1,99 @@
+﻿<header class="sticky-top">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">eBazzar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
+                <ul class="navbar-nav d-flex">
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+
+                        <li class="nav-item mx-2">
+                            <a asp-controller="Dashboard" asp-action="Create" class="nav-link text-dark" title="Write a blog"> <i class="fa-regular fa-pen-to-square fs-5"></i> write</a>
+                        </li>
+
+                        <li class="nav-item mx-2">
+                            <a href="#" class="nav-link text-dark" title="Notification"><i class="fa-regular fa-bell fs-5"></i></a>
+                        </li>
+
+                        <li class="nav-item mx-4">
+                            <div class="dropdown">
+                                <button title="@User.Identity.Name" class="btn dropdown-toggle user-icon" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-solid fa-user"></i>
+                                </button>
+
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item py-2" asp-action="Profile" asp-controller="Account"><i class="fa-solid fa-user mx-2 fs-5"></i> Profile</a></li>
+                                    <li><a class="dropdown-item py-2" asp-controller="Account" asp-action="Logout"> <i class="fa-solid fa-right-from-bracket mx-2 fs-5"></i> Sign out</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+                    else
+                    {
+                        @* @await Component.InvokeAsync("CategoriesMenu") *@
+
+                        <li class="nav-item mx-2">
+                            <button type="button" class="btn btn-Secondary border rounded-pill" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                Get Started
+                            </button>
+                        </li>
+
+                        <li class="nav-item mx-2">
+                            <a href="#" class="nav-link text-dark"><i class="fa-solid fa-magnifying-glass"></i></a>
+                        </li>
+                    }
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body signin-modal">
+                <div class="mb-4"><h3 class="text-center">Join eBazzar</h3></div>
+
+                @{
+                    var returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+                }
+
+                <div id="loginSection">
+                    @await Html.PartialAsync("_LoginPartial", new EcommerceApp.Application.DTOs.Auth.LoginDto() { ReturnUrl = returnUrl })
+                </div>
+
+                <div id="registerSection" style="display:none;">
+                    @await Html.PartialAsync("_RegisterPartial", new EcommerceApp.Application.DTOs.Auth.RegisterDto())
+                </div>
+
+                <div class="my-3 text-center " id="createAccountLinkSection">
+                    <p>No account? <a href="#" id="createAccountLink"><u>Create one</u></a></p>
+                </div>
+
+                <div class="text-center privacy-policy">
+                    <p>Click “Sign in” to agree to eBazzar Terms of Service and acknowledge that eBazzar Privacy Policy applies to you.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+        $('#createAccountLink').on('click', function (e) {
+        e.preventDefault();
+        $('#loginSection').hide();
+        $('#registerSection').show();
+        $('#createAccountLinkSection').hide();
+    });
+</script>
+
