@@ -3,6 +3,7 @@ using EcommerceApp.Domain.Entities;
 using EcommerceApp.Domain.IRepositories;
 using EcommerceApp.Infrastructure.Data;
 using EcommerceApp.Infrastructure.Repositories;
+using EcommerceApp.Infrastructure.Seeds;
 using EcommerceApp.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
@@ -45,6 +46,9 @@ namespace EcommerceApp.Infrastructure
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IFileStorageService, FileStorageService>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IProductService, ProductService>();
 
             return services;
         }

@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EcommerceApp.Web</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/EcommerceApp.Web.styles.css" asp-append-version="true" />
+    <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
+    <link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
+
+</head>
+<body>
+
+    <main class="dashboard">
+        <div class="row h-100">
+            <div class="col-2 col-md-2 bg-light sidebar">
+                <div class="position-fixed pt-3 text-light ">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/dashboard"><i class="fa-solid fa-gauge mx-2"></i> Dashboard</a>
+                            <hr class="text-black m-0" />
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/category"><i class="fa-solid fa-list mx-2"></i> Category</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/product"><i class="fas fa-box mx-2"></i> Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/order"><i class="fas fa-shopping-cart mx-2"></i> Orders</a>
+                        </li>
+                       
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" href="/Account/Logout"><i class="fas fa-sign-out-alt m-2"></i> Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col col-md">
+                <div class="text-end my-2 p-2 bg-light">Hi Superadmin</div>
+                <section>
+                    @RenderBody()
+                </section>
+            </div>
+        </div>
+    </main>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/toastr.js/toastr.min.js"></script>
+    <script src="~/lib/tinymce/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: '.tinymce-editor',
+            license_key: 'gpl',
+            toolbar: true, // Disable toolbar completely
+            menubar: false, // Disable menubar
+            branding: false, // Disable TinyMCE branding
+            statusbar: false, // Disable status bar at the bottom
+            height: 500,
+            placeholder: 'Add content...',
+            content_style: "body { font-family: 'Poppins', sans-serif; }",
+            paste_preprocess: function (plugin, args) {
+                // Remove href attributes and replace <a> with <p>
+                args.content = args.content.replace(/<a[^>]*>(.*?)<\/a>/g, '$1');
+
+                // Remove div tags and unwrap their contents
+                args.content = args.content.replace(/<div[^>]*>/g, '')
+                    .replace(/<\/div>/g, '');
+
+                args.content = args.content.replace(/ class="[\w\s-]*"/g, '')
+                    .replace(/ style="[^"]*"/g, '')
+                    .replace(/ id="[\w-]*"/g, '')
+                    .replace(/ data-selectable-paragraph="[^"]*"/g, '')
+                    .replace(/ data-\w+="[^"]*"/g, '');
+            }
+        });
+    </script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        var successMessage = '@TempData["SuccessMessage"]';
+        var infoMessage = '@TempData["InfoMessage"]';
+        var errorMessage = '@TempData["ErrorMessage"]';
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

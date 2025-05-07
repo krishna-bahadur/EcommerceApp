@@ -1,9 +1,12 @@
 ﻿using EcommerceApp.Application.DTOs.Category;
 using EcommerceApp.Application.Interfaces;
+using EcommerceApp.Domain.Constants.Roles;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceApp.Web.Controllers
 {
+
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
@@ -15,7 +18,7 @@ namespace EcommerceApp.Web.Controllers
             _categoryService = categoryService;
             _logger = logger;
         }
-
+        [Authorize(Roles = UserRoles.SuperAdmin)]
         public async Task<IActionResult> Index()
         {
             CategoryPageDto categoryPageDto = new CategoryPageDto();

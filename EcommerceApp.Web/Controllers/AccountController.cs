@@ -45,6 +45,12 @@ namespace EcommerceApp.Web.Controllers
 
                 if (result.IsSuccess)
                 {
+                    // Redirect SuperAdmin to Dashboard
+                    if (result.Value.Roles.Contains("SuperAdmin"))
+                    {
+                        model.ReturnUrl = Url.Action("Index", "dashboard");
+                    }
+
                     return Json(new { success = true, redirectUrl = model.ReturnUrl });
                 }
 

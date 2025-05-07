@@ -1,12 +1,28 @@
-﻿namespace EcommerceApp.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace EcommerceApp.Domain.Entities
 {
     public class ProductImage
     {
-        public int Id { get; set; }
+        [Key]
+        public Guid Id { get; set; }
         public string? ImageUrl { get; set; }
-        public DateTime AddedDate { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } 
 
         public Guid ProductId { get; set; }
-        public Product Product { get; set; }
+        public Product? Product { get; set; }
+
+        private ProductImage() { }
+
+        public ProductImage(
+            Guid id,
+            string? imageUrl, 
+            Guid productId)
+        {
+            Id = id;
+            ImageUrl = imageUrl;
+            CreatedAt = DateTime.UtcNow;
+            ProductId = productId;
+        }
     }
 }

@@ -14,6 +14,9 @@ namespace EcommerceApp.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+           // Soft delete
+            modelBuilder.Entity<Product>().HasQueryFilter(j => !j.IsDeleted);
         }
     }
 }

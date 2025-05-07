@@ -1,5 +1,6 @@
 using EcommerceApp.Application;
 using EcommerceApp.Infrastructure;
+using EcommerceApp.Infrastructure.Seeds;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,14 @@ builder.Services
 
 var app = builder.Build();
 
+// Seed Roles and Superadmin
+using(var scope = app.Services.CreateScope())
+{
+    var service = scope.ServiceProvider;
+    await DataSeeder.Seed(service);
+
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -28,6 +37,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

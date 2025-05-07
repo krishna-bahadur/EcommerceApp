@@ -21,8 +21,34 @@ namespace EcommerceApp.Domain.Entities
         public bool IsDeleted { get; set; }
         public DateTime CreatedAt { get; set; }
         public Guid CategoryId { get; set; }
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
+        public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
 
-        public ICollection<ProductImage> Images { get; set; }
+        private Product() { }
+
+        public Product(
+            Guid id,
+            string? name, 
+            string? slug, 
+            string? description, 
+            decimal? price, 
+            decimal? discountPrice, 
+            int? stockQuantity, 
+            Guid? categoryId,
+            List<ProductImage> images)
+        {
+            Id = id;
+            Name = name;
+            Slug = slug;
+            Description = description;
+            Price = (Decimal) price!;
+            DiscountPrice = discountPrice;
+            StockQuantity = (int) stockQuantity!;
+            IsActive = true;
+            IsDeleted = false;
+            CreatedAt = DateTime.UtcNow;
+            CategoryId = (Guid) categoryId!;
+            Images = images;
+        }
     }
 }

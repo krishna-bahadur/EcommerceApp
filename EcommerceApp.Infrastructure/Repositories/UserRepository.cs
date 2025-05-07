@@ -1,8 +1,10 @@
-﻿using EcommerceApp.Domain.Entities;
+﻿using EcommerceApp.Domain.Constants.Roles;
+using EcommerceApp.Domain.Entities;
 using EcommerceApp.Domain.IRepositories;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,20 +14,36 @@ namespace EcommerceApp.Infrastructure.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public UserRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public UserRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
         public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password = "")
         {
-            if (!string.IsNullOrEmpty(password))
-                return await _userManager.CreateAsync(user, password);
+            IdentityResult result;
 
-            return await _userManager.CreateAsync(user);
+            if (!string.IsNullOrEmpty(password))
+                result = await _userManager.CreateAsync(user, password);
+            else
+                result = await _userManager.CreateAsync(user);
+
+            if (!result.Succeeded)
+                return result;
+
+            if (!await _roleManager.RoleExistsAsync(UserRoles.User))
+            {
+                var roleResult = await _userManager.AddToRoleAsync(user, UserRoles.User);
+                if (!roleResult.Succeeded)
+                    return roleResult;
+            }
+
+            return result;
         }
 
         public async Task<ApplicationUser?> FindByEmailAsync(string email)

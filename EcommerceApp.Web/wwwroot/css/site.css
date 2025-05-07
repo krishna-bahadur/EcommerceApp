@@ -95,3 +95,72 @@ header .user-icon {
     .footer .social-icons a {
         margin-right: 10px;
     }
+
+.dashboard{
+    height: 100vh;
+}
+
+.underline_effect {
+    position: relative;
+    display: inline-block;
+}
+
+    .underline_effect::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 90%;
+        height: 3px;
+        background-color: gray;
+        border-radius: 2px;
+    }
+
+.tox .tox-edit-area {
+    border: none !important;
+}
+
+    .tox .tox-edit-area::before {
+        border: none !important;
+    }
+    .home .card{
+        width:200px;
+        max-width:220px;
+        height:300px;
+    }
+
+        .home .card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+body {
+    font-size: 14px !important;
+}
+
+.font-lg{
+    font-size: 16px;
+}
+
+.font-sm{
+    font-size: 12px;
+}
+
+.discount-price {
+    font-size: 12px;
+    color: #ff0000;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table td {
+    word-wrap: break-word;
+    max-width: 200px;
+}
+
+    .table td p {
+        text-align: unset;
+    }

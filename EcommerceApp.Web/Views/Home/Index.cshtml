@@ -1,8 +1,27 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<EcommerceApp.Application.DTOs.Product.ProductDto>
+
+@{
+    ViewData["Title"] = "eBazzar";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container home">
+    <p class="underline_effect fs-6">Just For You</p>
+    <div class="row mt-2">
+    @foreach (var product in Model)
+        {
+            <div class="col-auto mb-4">
+                <a asp-action="Details" asp-controller="Product" asp-route-slug="@product.Slug">
+                <div class="card">
+                    <img src="@product.Images.FirstOrDefault()?.ImageUrl" class="card-img-top rounded" alt="eBazzar" />
+                    <div class="card-body">
+                        <div class="card-text">
+                            @Html.Raw(product?.Name?.Length > 42 ? product.Name.Substring(0, 42) + "..." : product.Name)
+                        </div>
+                            <div><span class="text-primary font-lg">NRP @product.Price</span> <span class="text-decoration-line-through discount-price mx-2">@product.DiscountPrice</span> </div>
+                    </div>
+                </div>
+                </a>
+            </div>
+        }
+    </div>
 </div>
