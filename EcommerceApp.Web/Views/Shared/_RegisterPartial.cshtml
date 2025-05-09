@@ -1,7 +1,6 @@
 ﻿@model EcommerceApp.Application.DTOs.Auth.RegisterDto
 
 <form asp-controller="Account" asp-action="Register" method="post" class="px-2" id="registerForm">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <div class="mb-3">
         <div class="form-floating">
@@ -40,6 +39,8 @@
         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
     </div>
 
+    <div id="errorContainer1"></div>
+
     <div class="form-group text-center px-4">
         <button type="submit" class="btn btn-primary">Sign Up</button>
     </div>
@@ -51,7 +52,6 @@
 
 <script>
     $(document).ready(function () {
-
     $('#loginLink').on('click', function (e) {
         e.preventDefault();
         $('#loginSection').show();
@@ -74,14 +74,14 @@
                     if (response.success) {
                         window.location.href = response.redirectUrl;
                     } else {
-                        $('#errorContainer').html('');
+                        $('#errorContainer1').html('');
                         for (var error of response.errors) {
-                            $('#errorContainer').append('<div class="bg-danger text-light mb-2 text-center">' + error + '</div>');
+                            $('#errorContainer1').append('<div class="bg-danger text-light mb-2 py-2 text-center">' + error + '</div>');
                         }
                     }
                 },
                 error: function (xhr, status, error) {
-                    $('#errorContainer').html('<div class="text-danger">An unexpected error occurred. Please try again later.</div>');
+                    $('#errorContainer1').html('<div class="text-danger">An unexpected error occurred. Please try again later.</div>');
                 }
             });
         });

@@ -30,8 +30,12 @@ namespace EcommerceApp.Web.Controllers
 
                 return Json(new { success = false, errors = new[] { result.Error } });
             }
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
 
-            return Json(new { success = false });
+            return Json(new { success = false, errors});
         }
 
         [HttpPost]
