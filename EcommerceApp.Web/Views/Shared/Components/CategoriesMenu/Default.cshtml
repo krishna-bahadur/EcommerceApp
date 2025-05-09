@@ -1,0 +1,8 @@
+﻿@model IEnumerable<EcommerceApp.Application.DTOs.Category.CategoryDto>
+
+@foreach (var category in Model)
+{
+    <li class="nav-item mx-2">
+        <a class="nav-link text-dark" asp-controller="product" asp-action="category" asp-route-id="@category.Id">@category.Name</a>
+    </li>
+}

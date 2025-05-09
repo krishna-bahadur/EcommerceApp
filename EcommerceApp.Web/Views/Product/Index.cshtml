@@ -15,7 +15,7 @@
         // Strip HTML tags
         var plainText = Regex.Replace(html, "<.*?>", string.Empty);
 
-        return plainText.Length > 30 ? plainText.Substring(0, 30) + "..." : plainText;
+        return plainText.Length > 60 ? plainText.Substring(0, 60) + "..." : plainText;
     }
 }
 
@@ -62,7 +62,7 @@
                                     </td>
                                     <td>
                                         <p title="@product.Name">
-                                            @(product.Name?.Length > 30 ? product.Name.Substring(0, 30) + "..." : product.Name)
+                                            @(product.Name?.Length > 60 ? product.Name.Substring(0, 60) + "..." : product.Name)
                                         </p>
                                     </td>
                                     <td>

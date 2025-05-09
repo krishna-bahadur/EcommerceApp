@@ -12,6 +12,7 @@ namespace EcommerceApp.Domain.Entities
         public Guid Id { get; set; }
         public string? Name { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public bool IsDeleted { get; set; }
         public ICollection<Product> Products { get; set; } = new List<Product>();
 
         public Category(Guid id, string name)
@@ -19,6 +20,7 @@ namespace EcommerceApp.Domain.Entities
             Id = id;
             Name = name.Trim();
             CreatedAt = DateTime.UtcNow;
+            IsDeleted = false;
         }
     }
 }

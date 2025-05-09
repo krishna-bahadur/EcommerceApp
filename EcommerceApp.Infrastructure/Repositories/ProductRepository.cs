@@ -22,6 +22,12 @@ namespace EcommerceApp.Infrastructure.Repositories
             return product;
         }
 
+        public async Task AddProductImagesByProductId(List<ProductImage> productImages)
+        {
+            _context.ProductImages.AddRange(productImages);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<bool> AnyAsync(Guid id)
         {
             return await _context.Products
@@ -36,6 +42,13 @@ namespace EcommerceApp.Infrastructure.Repositories
                 product.IsDeleted = true;
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task DeleteProductImagesByProductId(Guid productId)
+        {
+            var productImages = await _context.ProductImages.Where(x => x.ProductId == productId).ToListAsync();
+            _context.ProductImages.RemoveRange(productImages);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> ExistsBySlugAsync(string slug)

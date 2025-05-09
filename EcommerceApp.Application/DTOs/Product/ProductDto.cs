@@ -18,5 +18,7 @@ namespace EcommerceApp.Application.DTOs.Product
         public Guid CategoryId { get; set; }
         public int StockQuantity { get; set; }
         public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
+        public List<string> ImageUrls { get; set; } = new List<string>();
+        public string? CategoryName { get; set; }
     }
 }

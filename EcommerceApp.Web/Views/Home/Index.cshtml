@@ -10,14 +10,24 @@
     @foreach (var product in Model)
         {
             <div class="col-auto mb-4">
-                <a asp-action="Details" asp-controller="Product" asp-route-slug="@product.Slug">
+                <a asp-action="details" asp-controller="product" asp-route-slug="@product.Slug">
                 <div class="card">
                     <img src="@product.Images.FirstOrDefault()?.ImageUrl" class="card-img-top rounded" alt="eBazzar" />
                     <div class="card-body">
                         <div class="card-text">
-                            @Html.Raw(product?.Name?.Length > 42 ? product.Name.Substring(0, 42) + "..." : product.Name)
+                            @Html.Raw(product?.Name?.Length > 35 ? product.Name.Substring(0, 35) + "..." : product.Name)
                         </div>
-                            <div><span class="text-primary font-lg">NRP @product.Price</span> <span class="text-decoration-line-through discount-price mx-2">@product.DiscountPrice</span> </div>
+                            <div>
+                                @if (product.DiscountPrice.HasValue)
+                                {
+                                    <span class="text-decoration-line-through text-secondary me-2">@product.Price.ToString("0.00")</span>
+                                    <span class="text-danger font-lg">NPR @product.DiscountPrice?.ToString("0.00")</span>
+                                }
+                                else
+                                {
+                                    <span class="font-lg text-primary">NPR @product.Price.ToString("0.00")</span>
+                                }
+                            </div>
                     </div>
                 </div>
                 </a>

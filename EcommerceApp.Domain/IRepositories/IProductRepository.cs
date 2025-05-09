@@ -12,5 +12,8 @@ namespace EcommerceApp.Domain.IRepositories
         Task UpdateAsync(Product product);
         Task DeleteAsync(Guid id);
         Task<bool> ExistsBySlugAsync(string slug);
+
+        Task DeleteProductImagesByProductId(Guid productId);
+        Task AddProductImagesByProductId(List<ProductImage> productImages);
     }
 }

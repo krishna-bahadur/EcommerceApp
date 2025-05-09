@@ -26,7 +26,7 @@ namespace EcommerceApp.Infrastructure.Repositories
             var category = await _context.Categories.FindAsync(id);
             if (category != null)
             {
-                _context.Categories.Remove(category);
+                category.IsDeleted = true;
                 await _context.SaveChangesAsync();
             }
         }

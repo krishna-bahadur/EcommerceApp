@@ -1,4 +1,6 @@
-﻿using EcommerceApp.Application.DTOs.Product;
+﻿using Azure;
+using EcommerceApp.Application.DTOs.Product;
+using EcommerceApp.Application.DTOs.Shipping;
 using EcommerceApp.Application.Interfaces;
 using EcommerceApp.Domain.Constants.Roles;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +24,7 @@ namespace EcommerceApp.Web.Controllers
         [Authorize(Roles = UserRoles.SuperAdmin)]
         public async Task<IActionResult> Index()
         {
-            var result = await _productService.GetAllBlogsAsync(10);
+            var result = await _productService.GetAllProductsAsync(10);
             if (result.IsSuccess)
             {
                 return View(result.Value);
@@ -45,6 +47,18 @@ namespace EcommerceApp.Web.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Category(Guid id)
+        {
+            var result = await _productService.GetAllProductsAsync(10, id);
+            if (result.IsSuccess)
+            {
+                return View(result.Value);
+            }
+
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = UserRoles.SuperAdmin)]
@@ -58,11 +72,11 @@ namespace EcommerceApp.Web.Controllers
                     if (response.IsSuccess)
                     {
                         TempData["SuccessMessage"] = response.Value;
-                        return View();
+                        return RedirectToAction("Create");
                     }
 
                     TempData["InfoMessage"] = response.Error;
-                    return View(dto);
+                    return View();
                 }
                 catch (Exception ex)
                 {
@@ -105,7 +119,7 @@ namespace EcommerceApp.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var response = await _productService.GetProductByIdAsync(id);
+            var response = await _productService.GetProductForEditByIdAsync(id);
 
             if (response.IsSuccess)
             {
@@ -120,50 +134,131 @@ namespace EcommerceApp.Web.Controllers
             TempData["InfoMessage"] = response.Error;
             return RedirectToAction("Index");
         }
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(UpdateBlogDto dto, string action)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            if (action == "draft")
-        //            {
-        //                var response = await _blogService.UpdateBlogAsync(dto, true);
-        //                if (response.IsSuccess)
-        //                {
-        //                    TempData["SuccessMessage"] = response.Value;
-        //                    return RedirectToAction("Index");
-        //                }
 
-        //                TempData["InfoMessage"] = response.Error;
-        //                return RedirectToAction("Index");
-        //            }
-        //            else if (action == "publish")
-        //            {
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(UpdateProductDto dto)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var result = await _productService.UpdateProductAsync(dto);
+                    if (result.IsSuccess)
+                    {
+                        TempData["SuccessMessage"] = result.Value;
+                        return RedirectToAction("Index");
+                    }
 
-        //                var response = await _blogService.UpdateBlogAsync(dto, false);
-        //                if (response.IsSuccess)
-        //                {
-        //                    TempData["SuccessMessage"] = response.Value;
-        //                    return RedirectToAction("Index");
-        //                }
+                    TempData["InfoMessage"] = result.Error;
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "An unexpected error occurred while updating the product. Please try again.";
+                    return RedirectToAction("Index");
+                }
+            }
 
-        //                TempData["InfoMessage"] = response.Error;
-        //                return RedirectToAction("Index");
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            _logger.LogError($"Error occurred while updating blog post: {ex}");
-        //            TempData["ErrorMessage"] = "An unexpected error occurred while updating the blog post. Please try again.";
-        //            return RedirectToAction("Index");
-        //        }
-        //    }
+            return View(dto);
+        }
+        [HttpGet("product/details/{slug}")]
+        public async Task<IActionResult> Details(string slug)
+        {
+            var result = await _productService.GetProductBySlugAsync(slug);
+            if (result.IsSuccess)
+            {
+                return View(result.Value);
+            }
 
-        //    return View(dto);
+            TempData["InfoMessage"] = result.Error;
+            return View();
+        }
 
-        //}
+        [HttpPost]
+        public async Task<IActionResult> Shipping(Guid id, int quantity)
+        {
+            ShippingPageDto shippingPageDto = new ShippingPageDto();
+
+            var result = await _productService.GetProductForEditByIdAsync(id);
+            if (result.IsSuccess)
+            {
+                var productDto = result.Value;
+                decimal? price;
+                if (productDto.DiscountPrice != null && productDto.DiscountPrice.HasValue)
+                {
+                    price = productDto.DiscountPrice;
+                }
+                else
+                {
+                    price = productDto.Price;
+                }
+                // Multiply by total quantity
+                price = price * quantity;
+
+                //Direct buy have only 1 item
+                int totalItem = 1;
+
+                // Static Delivery fee
+                decimal? deliveryFee = 75;
+
+                // Delivery and total fee are added at last
+                decimal? totalPrice = deliveryFee + price;
+
+                shippingPageDto.OrderSummeryDto.TotalItems = totalItem;
+                shippingPageDto.OrderSummeryDto.Price = (decimal) price;
+                shippingPageDto.OrderSummeryDto.DeliveryFee =  (decimal) deliveryFee;
+                shippingPageDto.OrderSummeryDto.TotalPrice = (decimal) totalPrice;
+
+                return View(shippingPageDto);
+
+            }
+
+            TempData["InfoMessage"] = result.Error;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Checkout(Guid id, int quantity)
+        {
+            ShippingPageDto shippingPageDto = new ShippingPageDto();
+
+            var result = await _productService.GetProductForEditByIdAsync(id);
+            if (result.IsSuccess)
+            {
+                var productDto = result.Value;
+                decimal? price;
+                if (productDto.DiscountPrice != null && productDto.DiscountPrice.HasValue)
+                {
+                    price = productDto.DiscountPrice;
+                }
+                else
+                {
+                    price = productDto.Price;
+                }
+                // Multiply by total quantity
+                price = price * quantity;
+
+                //Direct buy have only 1 item
+                int totalItem = 1;
+
+                // Static Delivery fee
+                decimal? deliveryFee = 75;
+
+                // Delivery and total fee are added at last
+                decimal? totalPrice = deliveryFee + price;
+
+                shippingPageDto.OrderSummeryDto.TotalItems = totalItem;
+                shippingPageDto.OrderSummeryDto.Price = (decimal) price;
+                shippingPageDto.OrderSummeryDto.DeliveryFee = (decimal) deliveryFee;
+                shippingPageDto.OrderSummeryDto.TotalPrice = (decimal) totalPrice;
+
+                return View(shippingPageDto);
+
+            }
+
+            TempData["InfoMessage"] = result.Error;
+            return View();
+        }
     }
 }

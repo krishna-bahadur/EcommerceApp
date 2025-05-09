@@ -11,9 +11,10 @@ namespace EcommerceApp.Application.Interfaces
     public interface IProductService
     {
         Task<Result<string>> CreateProductAsync(CreateProductDto createProductDto);
-        Task<Result<IEnumerable<ProductDto>>> GetAllBlogsAsync(int number);
+        Task<Result<IEnumerable<ProductDto>>> GetAllProductsAsync(int number, Guid? categoryId = null);
         Task<Result<string>> DeleteProductAsync(Guid id);
-        Task<Result<ProductDto>> GetProductByIdAsync(Guid id);
-        Task<Result<CreateProductDto>> UpdateProductByIdAsync(Guid id);
+        Task<Result<UpdateProductDto>> GetProductForEditByIdAsync(Guid id);
+        Task<Result<ProductDto>> GetProductBySlugAsync(string slug);
+        Task<Result<string>> UpdateProductAsync(UpdateProductDto dto);
     }
 }

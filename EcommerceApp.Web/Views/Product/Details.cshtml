@@ -1,0 +1,161 @@
+﻿@model EcommerceApp.Application.DTOs.Product.ProductDto
+
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-4 col-4">
+            @if (Model.ImageUrls != null && Model.ImageUrls.Any())
+            {
+                <div id="carouselExampleInterval" class="carousel carousel-dark slide" data-bs-ride="carousel">
+                    <div class="carousel-inner border">
+                        @for (int i = 0; i < Model.ImageUrls.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")" data-bs-interval="2000">
+                                <img src="@Model.ImageUrls[i]" class="d-block w-100 rounded shadow-sm" alt="Product Image">
+                            </div>
+                        }
+                    </div>
+
+                    @if (Model.ImageUrls.Count > 1)
+                    {
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    }
+                </div>
+            }
+        </div>
+        <div class="col-md col">
+            <h3 class="fw-bold">@Model.Name</h3>
+            <p class="font-sm my-0 text-muted">In Stock: @Model.StockQuantity</p>
+            <p class="text-muted">
+                @if (Model.DiscountPrice.HasValue)
+                {
+                    <span class="text-decoration-line-through text-secondary me-2">@Model.Price.ToString("0.00")</span>
+                    <span class="text-danger fs-4">Rs. @Model.DiscountPrice?.ToString("0.00")</span>
+                }
+                else
+                {
+                    <span class="fs-4 text-primary">NPR @Model.Price.ToString("0.00")</span>
+                }
+            </p>
+            <div>
+                <img src="~/uploads/star.png" />
+                <img src="~/uploads/star.png" />
+                <img src="~/uploads/star.png" />
+                <img src="~/uploads/star.png" />
+                <img src="~/uploads/star.png" />
+                <span class="font-sm text-muted">Rating</span>
+            </div>
+
+            <div class="my-3 d-flex" style="align-items: baseline;">
+                <label for="quantity" class="form-label">Quantity</label>
+                <input type="number" id="quantity" name="quantity" class="form-control mx-3 w-25" value="1" min="1" onchange="updateQuantity(this.value)" />
+            </div>
+
+            <div class="row my-2">
+                <div class="col-md-8">
+                    <div class="row">
+
+                        <div class="col col-md">
+                            <div class="bg-primary p-2 rounded text-center">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <form method="post" asp-action="shipping" asp-controller="product" asp-route-id="@Model.Id">
+                                        <input type="hidden" name="quantity" id="buyNowQuantity" value="1" />
+                                        <button type="submit" class="bg-transparent text-light">Buy Now</button>
+                                    </form>
+                                }
+                                else{
+                                    <button class="bg-transparent text-light" data-bs-toggle="modal" data-bs-target="#exampleModal">Buy Now</button>
+                                }
+                            </div>
+                        </div>
+                        <div class="col col-md">
+                            <div class="bg-success p-2 rounded text-light text-center">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <form method="post" asp-action="AddToCart" asp-controller="Cart" asp-route-id="@Model.Id">
+                                        <input type="hidden" name="quantity" id="addToCartQuantity" value="1" />
+                                        <button type="submit" class="bg-transparent text-light">
+                                            <i class="fa-solid fa-cart-shopping mx-2"></i> Add to Cart
+                                        </button>
+                                    </form>
+                                }
+                                else{
+                                    <button class="bg-transparent text-light" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-cart-plus"></i> Add to Cart</button>
+
+                                }
+
+                                </div>
+                            </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="my-5">
+        <div class="row">
+            <div class="col-8 col-md-8 text-justify" style="color: #000">
+                @Html.Raw(Model.Description)
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body signin-modal">
+                <div class="mb-4"><h3 class="text-center">Join eBazzar</h3></div>
+
+                @{
+                    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+                }
+
+                <p>@returnUrl</p>
+
+                <div id="loginSection">
+                    @await Html.PartialAsync("_LoginPartial", new EcommerceApp.Application.DTOs.Auth.LoginDto() { ReturnUrl = returnUrl })
+                </div>
+
+                <div id="registerSection" style="display:none;">
+                    @await Html.PartialAsync("_RegisterPartial", new EcommerceApp.Application.DTOs.Auth.RegisterDto())
+                </div>
+
+                <div class="my-3 text-center " id="createAccountLinkSection">
+                    <p>No account? <a href="#" id="createAccountLink"><u>Create one</u></a></p>
+                </div>
+
+                <div class="text-center privacy-policy">
+                    <p>Click “Sign in” to agree to eBazzar Terms of Service and acknowledge that eBazzar Privacy Policy applies to you.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateQuantity(value) {
+        document.getElementById('buyNowQuantity').value = value;
+        document.getElementById('addToCartQuantity').value = value;
+    }
+
+        $('#createAccountLink').on('click', function (e) {
+        e.preventDefault();
+        $('#loginSection').hide();
+        $('#registerSection').show();
+        $('#createAccountLinkSection').hide();
+    });
+</script>
+
+

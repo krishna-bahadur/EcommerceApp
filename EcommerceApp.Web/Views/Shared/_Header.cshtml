@@ -9,17 +9,15 @@
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
                 <ul class="navbar-nav d-flex">
 
+                    @await Component.InvokeAsync("CategoriesMenu") 
+                    <li class="nav-item mx-2">
+                        <a asp-action="index" asp-controller="cart" class="nav-link text-dark"><i class="fa-solid fa-cart-shopping mx-2"></i></a>
+                    </li>
+
+                    
+
                     @if (User.Identity.IsAuthenticated)
                     {
-
-                        <li class="nav-item mx-2">
-                            <a asp-controller="Dashboard" asp-action="Create" class="nav-link text-dark" title="Write a blog"> <i class="fa-regular fa-pen-to-square fs-5"></i> write</a>
-                        </li>
-
-                        <li class="nav-item mx-2">
-                            <a href="#" class="nav-link text-dark" title="Notification"><i class="fa-regular fa-bell fs-5"></i></a>
-                        </li>
-
                         <li class="nav-item mx-4">
                             <div class="dropdown">
                                 <button title="@User.Identity.Name" class="btn dropdown-toggle user-icon" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -35,7 +33,6 @@
                     }
                     else
                     {
-                        @* @await Component.InvokeAsync("CategoriesMenu") *@
 
                         <li class="nav-item mx-2">
                             <button type="button" class="btn btn-Secondary border rounded-pill" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -43,10 +40,11 @@
                             </button>
                         </li>
 
-                        <li class="nav-item mx-2">
-                            <a href="#" class="nav-link text-dark"><i class="fa-solid fa-magnifying-glass"></i></a>
-                        </li>
                     }
+
+                    <li class="nav-item mx-2">
+                        <a href="#" class="nav-link text-dark"><i class="fa-solid fa-magnifying-glass"></i></a>
+                    </li>
 
                 </ul>
             </div>
@@ -65,7 +63,7 @@
                 <div class="mb-4"><h3 class="text-center">Join eBazzar</h3></div>
 
                 @{
-                    var returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+                    var returnUrl = Context.Request.Path + Context.Request.QueryString;
                 }
 
                 <div id="loginSection">

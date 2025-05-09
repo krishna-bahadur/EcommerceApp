@@ -1,4 +1,4 @@
-﻿@model EcommerceApp.Application.DTOs.Product.ProductDto
+﻿@model EcommerceApp.Application.DTOs.Product.UpdateProductDto
 
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -7,7 +7,7 @@
 
 <div class="bg-light p-4 rounded-3 mb-3">
     <h5 class="mb-4"><span class="underline_effect">Edit Product</span></h5>
-    <form id="createProductForm" asp-action="Create" asp-controller="Product" method="post" enctype="multipart/form-data">
+    <form id="createProductForm" asp-action="edit" asp-controller="product" method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="col-8 col-md-8 col-sm-8">
                 <div class="form-group mb-4">
@@ -31,7 +31,7 @@
         <div class="row">
             <div class="col col-md col-sm">
                 <div class="form-group mb-4">
-                    <label asp-for="Price" class="mb-2">Price (NRP) <span class="text-danger">*</span></label>
+                    <label asp-for="Price" class="mb-2">Price (Rs.) <span class="text-danger">*</span></label>
                     <input asp-for="Price" class="form-control py-2" placeholder="1000.00" />
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
@@ -67,6 +67,26 @@
             <img id="photoPreview" src="#" alt="Image Preview" class="w-25 mt-4" style="display:none;" />
             <div id="photoError" class="text-danger mt-2" style="display:none;"></div>
         </div>
+
+        <div class="row">
+            @if (Model.ExistingImages != null)
+            {
+                @for (int i = 0; i < Model.ExistingImages.Count; i++)
+                {
+                    <div class="col-3 col-md-3 mb-3">
+                        <img src="@Model.ExistingImages[i]" class="w-100 mb-2" />
+                        <input type="hidden" name="ExistingImages[@i]" value="@Model.ExistingImages[i]" />
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="RemovedImages" value="@Model.ExistingImages[i]" id="RemoveImage_@i" />
+                            <label class="form-check-label" for="removeImage_@i">
+                                Remove
+                            </label>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
 
         <input type="hidden" asp-for="Id" />
 

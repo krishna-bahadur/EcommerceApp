@@ -1,0 +1,84 @@
+﻿@model EcommerceApp.Application.DTOs.Cart.CartDto
+
+<div class="container py-5">
+    <h5 class="mb-4 underline_effect">Your Shopping Cart</h5>
+
+    @if (!Model.CartItemDto.Any())
+    {
+        <div class="alert alert-info">
+            Your cart is empty. <a asp-controller="Home" asp-action="Index">Continue shopping</a>
+        </div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.CartItemDto)
+                            {
+                                <tr>
+                                    <td>
+                                        <a asp-controller="Product" asp-action="Details" asp-route-id="@item.ProductId">
+                                            @item.ProductName
+                                        </a>
+                                    </td>
+                                    <td>Rs @item.UnitPrice.ToString("0.00")</td>
+                                    <td>
+                                        <form asp-action="UpdateQuantity" method="post" class="d-flex align-items-center">
+                                            <input type="hidden" name="productId" value="@item.ProductId" />
+                                            <input type="number" name="quantity" value="@item.Quantity" min="1"
+                                                   class="form-control form-control-sm" style="width: 70px" />
+                                        </form>
+                                    </td>
+                                    <td>Rs @item.LineTotal.ToString("0.00")</td>
+                                    <td>
+                                        <form asp-action="RemoveFromCart" method="post">
+                                            <input type="hidden" name="productId" value="@item.ProductId" />
+                                            <button type="button" class="btn btn-sm btn-outline-danger">
+                                                Remove
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end fw-bold">Cart Total:</td>
+                                <td colspan="2" class="fw-bold">NPR @Model.TotalPrice.ToString("0.00")</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-between">
+                <div>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Continue Shopping
+                    </a>
+                    <form asp-action="ClearCart" method="post" class="d-inline">
+                        <button type="button" class="btn btn-outline-danger">
+                            <i class="bi bi-cart-x"></i> Clear Cart
+                        </button>
+                    </form>
+                </div>
+                <form asp-action="Checkout" method="post">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-credit-card"></i> Proceed to Checkout
+                    </button>
+                </form>
+            </div>
+        </div>
+    }
+</div>

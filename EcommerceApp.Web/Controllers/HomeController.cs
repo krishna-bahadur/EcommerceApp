@@ -19,7 +19,7 @@ namespace EcommerceApp.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var result = await _productService.GetAllBlogsAsync(10);
+            var result = await _productService.GetAllProductsAsync(10);
             if(result.IsSuccess)
             {
                 return View(result.Value);

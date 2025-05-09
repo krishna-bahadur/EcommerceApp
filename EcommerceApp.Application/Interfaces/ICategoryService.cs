@@ -11,7 +11,7 @@ namespace EcommerceApp.Application.Interfaces
     public interface ICategoryService
     {
         Task<Result<CategoryDto>> GetCategoryByIdAsync(Guid id);
-        Task<Result<IEnumerable<CategoryDto>>> GetAllCategoriesAsync(bool orderby = false);
+        Task<Result<IEnumerable<CategoryDto>>> GetAllCategoriesAsync(bool orderby = true);
         Task<Result<CategoryDto>> CreateCategoryAsync(CreateCategoryDto categoryCreateDto);
         Task<Result<IEnumerable<CategoryDto>>> SearchCategoriesByNameAsync(string searchTerm);
         Task<Result<string>> DeleteCategoryAsync(Guid id);

@@ -23,11 +23,11 @@ namespace EcommerceApp.Web.Controllers
         {
             CategoryPageDto categoryPageDto = new CategoryPageDto();
 
-            var response = await _categoryService.GetAllCategoriesAsync();
+            var result = await _categoryService.GetAllCategoriesAsync();
 
-            if (response.IsSuccess)
+            if (result.IsSuccess)
             {
-                categoryPageDto.CategoryDtos = response.Value.ToList();
+                categoryPageDto.CategoryDtos = result.Value.ToList();
             }
 
             return View(categoryPageDto);
@@ -41,14 +41,14 @@ namespace EcommerceApp.Web.Controllers
             {
                 try
                 {
-                    var response = await _categoryService.CreateCategoryAsync(dto.CreateCategoryDto);
-                    if (response.IsSuccess)
+                    var result = await _categoryService.CreateCategoryAsync(dto.CreateCategoryDto);
+                    if (result.IsSuccess)
                     {
                         TempData["SuccessMessage"] = "Category created successfully!";
                         return RedirectToAction("Index");
                     }
 
-                    TempData["InfoMessage"] = response.Error;
+                    TempData["InfoMessage"] = result.Error;
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
@@ -67,14 +67,14 @@ namespace EcommerceApp.Web.Controllers
         {
             try
             {
-                var response = await _categoryService.DeleteCategoryAsync(id);
-                if (response.IsSuccess)
+                var result = await _categoryService.DeleteCategoryAsync(id);
+                if (result.IsSuccess)
                 {
-                    TempData["SuccessMessage"] = response.Value;
+                    TempData["SuccessMessage"] = result.Value;
                     return RedirectToAction("Index");
                 }
 
-                TempData["InfoMessage"] = response.Error;
+                TempData["InfoMessage"] = result.Error;
                 return RedirectToAction("Index");
             }
             catch (Exception ex)

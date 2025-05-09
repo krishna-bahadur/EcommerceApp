@@ -43,13 +43,13 @@ namespace EcommerceApp.Infrastructure.Services
             {
                 return Result<string>.Failure($"Category with Id {id} not found");
             }
-
+            
             await _categoryRepository.DeleteAsync(id);
 
             return Result<string>.Success("Category deleted successfully.");
         }
 
-        public async Task<Result<IEnumerable<CategoryDto>>> GetAllCategoriesAsync(bool orderby = false)
+        public async Task<Result<IEnumerable<CategoryDto>>> GetAllCategoriesAsync(bool orderby = true)
         {
             var categories = await _categoryRepository.GetAllAsync(orderby);
 

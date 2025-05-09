@@ -49,6 +49,8 @@ namespace EcommerceApp.Infrastructure
             services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<ICartService, CartService>();
 
             return services;
         }

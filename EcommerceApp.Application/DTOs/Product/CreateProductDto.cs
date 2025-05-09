@@ -4,8 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace EcommerceApp.Application.DTOs.Product
 {
     public class CreateProductDto
-    {
-        public Guid Id { get; set; }
+    { 
         [Required(ErrorMessage = "Product Name is required.")]
         [StringLength(100, MinimumLength = 2, ErrorMessage = "The {0} must be between {2} and {1} characters long.")]
         public string? Name { get; set; }
